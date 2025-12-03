@@ -1,2 +1,2 @@
-# Markdown
+# MathSci
 markdown viewer and editor
