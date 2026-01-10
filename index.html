@@ -26,13 +26,16 @@
     "rehype-raw": "https://esm.sh/rehype-raw@7?bundle",
     "rehype-highlight": "https://esm.sh/rehype-highlight@7?bundle",
     "uuid": "https://aistudiocdn.com/uuid@^13.0.0",
-    "mermaid": "https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.esm.min.mjs"
+    "mermaid": "https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.esm.min.mjs",
+    "mathjs": "https://aistudiocdn.com/mathjs@^15.1.0"
   }
 }
 </script>
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
     <!-- Smiles Drawer (Organic Chemistry Structures) -->
     <script src="https://unpkg.com/smiles-drawer@2.0.1/dist/smiles-drawer.min.js"></script>
+    <!-- 3Dmol.js for 3D Molecular Visualization -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.0.4/3Dmol-min.js"></script>
     <!-- Plotly.js for Graphing -->
     <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
     <!-- MathJS for evaluating expressions -->
@@ -109,9 +112,10 @@
 
       /* Editor */
       .editor-container { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; height: 100%; }
-      .editor-header { height: 2.5rem; border-bottom: 1px solid var(--border-color); background-color: var(--bg-toolbar); display: flex; align-items: center; justify-content: space-between; padding: 0 1rem; flex-shrink: 0; }
+      /* Modified editor-header to accommodate scalable toolbar */
+      .editor-header { min-height: 2.5rem; height: auto; border-bottom: 1px solid var(--border-color); background-color: var(--bg-toolbar); display: flex; flex-direction: column; flex-shrink: 0; }
       .editor-filename { font-family: monospace; font-size: 0.875rem; color: var(--accent-color); font-weight: 500; }
-      .editor-toolbar { padding: 0.25rem 0.5rem; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 0.25rem; overflow-x: auto; background-color: var(--bg-toolbar); flex-shrink: 0; }
+      .editor-toolbar { background-color: var(--bg-toolbar); display: flex; flex-direction: column; }
       .divider { width: 1px; height: 1.25rem; background-color: var(--border-color); margin: 0 0.25rem; }
       
       .split-container { flex: 1; display: flex; overflow: hidden; }
@@ -145,6 +149,9 @@
       ::-webkit-scrollbar-track { background: transparent; }
       ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; border: 2px solid transparent; background-clip: content-box; }
       ::-webkit-scrollbar-thumb:hover { background-color: var(--text-muted); }
+      
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
       /* Markdown Body Styles */
       .markdown-body { color: var(--text-main); line-height: 1.6; max-width: 65ch; margin: 0 auto; }
@@ -167,13 +174,12 @@
       .markdown-body a:hover { text-decoration: underline; }
       
       /* Visualizer Containers */
-      .viz-container { margin: 1.5rem 0; padding: 1rem; border: 1px solid var(--border-color); border-radius: 0.5rem; background-color: var(--bg-sidebar); overflow: hidden; }
       
       model-viewer { width: 100%; height: 400px; background-color: var(--bg-sidebar); border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 1em; }
     </style>
 
 <link rel="stylesheet" href="/index.css">
-  <script type="module" crossorigin src="/MathSci/assets/index-OLGksyNC.js"></script>
+  <script type="module" crossorigin src="/MathSci/assets/index-BI-9z5NX.js"></script>
 </head>
   <body>
     <div id="root"></div>
