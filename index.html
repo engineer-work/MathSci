@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -6,43 +7,49 @@
     <title>MathSci Editor</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
-    <!-- KaTeX Core (Required for extensions) -->
-    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
-    <!-- Chemistry Support for KaTeX -->
-    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/mhchem.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    <!-- KaTeX Core -->
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <!-- mhchem extension for KaTeX -->
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/mhchem.min.js"></script>
     <!-- 3D Model Viewer -->
-  <script type="importmap">
+      <script type="importmap">
 {
   "imports": {
     "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react-dom": "https://aistudiocdn.com/react-dom@^19.2.0",
     "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
     "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react/jsx-runtime": "https://aistudiocdn.com/react@^19.2.0/jsx-runtime",
     "@google/genai": "https://aistudiocdn.com/@google/genai@^1.30.0",
     "lucide-react": "https://aistudiocdn.com/lucide-react@^0.555.0",
     "react-markdown": "https://aistudiocdn.com/react-markdown@^10.1.0",
     "remark-gfm": "https://aistudiocdn.com/remark-gfm@^4.0.1",
     "remark-math": "https://esm.sh/remark-math@6?bundle",
+    "rehype-katex": "https://esm.sh/rehype-katex@7?bundle",
     "rehype-raw": "https://esm.sh/rehype-raw@7?bundle",
     "rehype-highlight": "https://esm.sh/rehype-highlight@7?bundle",
     "uuid": "https://aistudiocdn.com/uuid@^13.0.0",
     "mermaid": "https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.esm.min.mjs",
-    "mathjs": "https://aistudiocdn.com/mathjs@^15.1.0"
+    "mathjs": "https://aistudiocdn.com/mathjs@^15.1.0",
+    "@monaco-editor/react": "https://esm.sh/@monaco-editor/react@4.6.0?external=react,react-dom"
   }
 }
 </script>
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
-    <!-- Smiles Drawer (Organic Chemistry Structures) -->
+    <!-- Smiles Drawer -->
     <script src="https://unpkg.com/smiles-drawer@2.0.1/dist/smiles-drawer.min.js"></script>
-    <!-- 3Dmol.js for 3D Molecular Visualization -->
+    <!-- 3Dmol.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.0.4/3Dmol-min.js"></script>
-    <!-- Plotly.js for Graphing -->
+    <!-- Plotly.js -->
     <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
-    <!-- MathJS for evaluating expressions -->
+    <!-- MathJS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/12.4.0/math.min.js"></script>
-    <!-- Matter.js for Physics Engine -->
+    <!-- Matter.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
 
+    <link rel="icon" type="image/svg+xml" href="/MathSci/assets/Om-DjmCIeBv.svg" />
+    
     <style>
       :root {
         --bg-main: #030712;
@@ -58,36 +65,14 @@
       * { box-sizing: border-box; }
       body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg-main); color: var(--text-main); overflow: hidden; }
 
-      /* Layout Utilities */
       .app-container { display: flex; width: 100vw; height: 100vh; overflow: hidden; }
       .flex { display: flex; }
       .flex-col { flex-direction: column; }
       .items-center { align-items: center; }
       .justify-between { justify-content: space-between; }
-      .justify-center { justify-content: center; }
-      .justify-end { justify-content: flex-end; }
-      .gap-1 { gap: 0.25rem; }
-      .gap-2 { gap: 0.5rem; }
-      .gap-4 { gap: 1rem; }
-      .p-1 { padding: 0.25rem; }
-      .p-2 { padding: 0.5rem; }
-      .p-4 { padding: 1rem; }
-      .px-2 { padding-left: 0.5rem; padding-right: 0.5rem; }
-      .px-4 { padding-left: 1rem; padding-right: 1rem; }
-      .py-1 { padding-top: 0.25rem; padding-bottom: 0.25rem; }
-      .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
       .h-full { height: 100%; }
       .w-full { width: 100%; }
       
-      /* Responsive Utilities */
-      .hidden { display: none !important; }
-      .md-visible { display: none; }
-      @media (min-width: 768px) {
-        .md-hidden { display: none !important; }
-        .md-visible { display: block !important; }
-      }
-      
-      /* Sidebar */
       .sidebar-wrapper { background-color: var(--bg-sidebar); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; transition: width 0.3s ease; overflow: hidden; flex-shrink: 0; }
       .sidebar-header { padding: 1rem; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; }
       .sidebar-title { font-weight: bold; font-size: 0.875rem; letter-spacing: 0.05em; display: flex; align-items: center; gap: 0.5rem; color: var(--text-main); }
@@ -98,24 +83,17 @@
       .sidebar-actions { display: none; margin-left: auto; gap: 0.25rem; }
       .sidebar-item:hover .sidebar-actions { display: flex; }
       
-      /* Toolbar */
       .toolbar { height: 3.5rem; background-color: var(--bg-toolbar); border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; padding: 0 1.5rem; flex-shrink: 0; }
       .app-title { font-weight: bold; font-size: 1.125rem; color: var(--text-main); }
       
-      /* Buttons */
       .btn-icon { padding: 0.4rem; border-radius: 0.25rem; color: var(--text-muted); background: transparent; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; }
       .btn-icon:hover { background-color: var(--hover-bg); color: var(--text-main); }
       .btn { display: flex; align-items: center; gap: 0.5rem; padding: 0.375rem 0.75rem; border-radius: 0.375rem; border: 1px solid var(--border-color); background: transparent; color: var(--text-main); font-size: 0.75rem; font-weight: 500; cursor: pointer; transition: background 0.2s; }
       .btn:hover { background-color: var(--hover-bg); }
       .btn-primary { background-color: var(--accent-color); color: white; border: none; }
-      .btn-primary:hover { opacity: 0.9; }
 
-      /* Editor */
       .editor-container { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; height: 100%; }
-      /* Modified editor-header to accommodate scalable toolbar */
-      .editor-header { min-height: 2.5rem; height: auto; border-bottom: 1px solid var(--border-color); background-color: var(--bg-toolbar); display: flex; flex-direction: column; flex-shrink: 0; }
-      .editor-filename { font-family: monospace; font-size: 0.875rem; color: var(--accent-color); font-weight: 500; }
-      .editor-toolbar { background-color: var(--bg-toolbar); display: flex; flex-direction: column; }
+      .editor-header { min-height: 2.5rem; border-bottom: 1px solid var(--border-color); background-color: var(--bg-toolbar); display: flex; flex-direction: column; flex-shrink: 0; }
       .divider { width: 1px; height: 1.25rem; background-color: var(--border-color); margin: 0 0.25rem; }
       
       .split-container { flex: 1; display: flex; overflow: hidden; }
@@ -127,59 +105,50 @@
       .textarea { width: 100%; height: 100%; padding: 1rem; background-color: var(--bg-main); color: var(--text-main); border: none; outline: none; resize: none; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 0.875rem; line-height: 1.6; overflow: auto; }
       .preview-area { padding: 2rem; overflow-y: auto; background-color: var(--bg-main); }
       
-      /* Modals */
-      .modal-overlay { position: fixed; inset: 0; background-color: rgba(0,0,0,0.6); z-index: 50; display: flex; align-items: center; justify-content: center; }
-      .modal { background-color: var(--bg-sidebar); border: 1px solid var(--border-color); border-radius: 0.5rem; width: 100%; max-width: 28rem; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); overflow: hidden; }
-      .modal-header { padding: 1rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; font-weight: bold; }
-      .modal-body { padding: 1.5rem; }
-      .modal-footer { padding: 1rem; border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end; }
+      /* Markdown Body Improvements */
+      .markdown-body { color: var(--text-main); line-height: 1.6; max-width: 100%; margin: 0 auto; }
+      .markdown-body p { margin-bottom: 1rem; }
+      .markdown-body img { 
+        max-width: 100%; 
+        height: auto; 
+        display: block; 
+        margin: 1.5rem auto; 
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      }
+      .markdown-body pre { background-color: var(--bg-sidebar); padding: 1em; border-radius: 6px; overflow-x: auto; margin-bottom: 1em; border: 1px solid var(--border-color); }
       
-      /* Inputs */
-      .input-text { width: 100%; background-color: var(--bg-main); border: 1px solid var(--border-color); color: var(--text-main); padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.875rem; outline: none; }
-      .input-text:focus { border-color: var(--accent-color); }
+      /* KaTeX Styles for Chemical Equations */
+      .katex-display { 
+        margin: 1.5rem 0; 
+        padding: 1rem 0.5rem;
+        overflow-x: auto; 
+        overflow-y: hidden;
+        background-color: rgba(255, 255, 255, 0.03);
+        border-radius: 6px;
+        text-align: center;
+      }
+      /* Ensure \ce colors are respected and visible */
+      .katex .mhchem {
+        color: inherit;
+      }
 
-      /* Context Menu */
-      .context-menu { position: fixed; background-color: var(--bg-sidebar); border: 1px solid var(--border-color); border-radius: 0.25rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); z-index: 60; min-width: 10rem; padding-top: 0.25rem; padding-bottom: 0.25rem; }
-      .context-item { padding: 0.5rem 1rem; font-size: 0.875rem; color: var(--text-main); cursor: pointer; display: flex; align-items: center; gap: 0.5rem; border: none; width: 100%; text-align: left; background: transparent; }
-      .context-item:hover { background-color: var(--hover-bg); }
-      
-      /* Custom scrollbar */
-      * { scrollbar-width: thin; scrollbar-color: var(--border-color) transparent; }
-      ::-webkit-scrollbar { width: 8px; height: 8px; }
-      ::-webkit-scrollbar-track { background: transparent; }
-      ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; border: 2px solid transparent; background-clip: content-box; }
-      ::-webkit-scrollbar-thumb:hover { background-color: var(--text-muted); }
-      
+      .viz-container { margin: 1.5rem 0; padding: 1rem; border: 1px solid var(--border-color); border-radius: 0.5rem; background-color: var(--bg-sidebar); overflow: hidden; }
+
       .no-scrollbar::-webkit-scrollbar { display: none; }
       .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      
+      .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(4px); }
+      .modal { width: 90%; max-width: 500px; border-radius: 0.75rem; overflow: hidden; }
 
-      /* Markdown Body Styles */
-      .markdown-body { color: var(--text-main); line-height: 1.6; max-width: 65ch; margin: 0 auto; }
-      .markdown-body h1, .markdown-body h2, .markdown-body h3 { color: var(--text-main); border-bottom: 1px solid var(--border-color); margin-top: 1.5em; margin-bottom: 0.5em; padding-bottom: 0.3em; }
-      .markdown-body h1 { font-size: 2em; font-weight: bold; }
-      .markdown-body h2 { font-size: 1.5em; font-weight: bold; }
-      .markdown-body p { margin-bottom: 1em; }
-      .markdown-body ul, .markdown-body ol { padding-left: 2em; margin-bottom: 1em; }
-      .markdown-body li { margin-bottom: 0.25em; }
-      .markdown-body code { background-color: var(--bg-sidebar); padding: 0.2em 0.4em; border-radius: 3px; font-family: monospace; font-size: 0.85em; border: 1px solid var(--border-color); }
-      .markdown-body pre { background-color: var(--bg-sidebar); padding: 1em; border-radius: 6px; overflow-x: auto; margin-bottom: 1em; border: 1px solid var(--border-color); }
-      .markdown-body pre code { background: transparent; padding: 0; border: none; }
-      .markdown-body blockquote { border-left: 4px solid var(--accent-color); padding-left: 1em; color: var(--text-muted); margin-bottom: 1em; background: var(--hover-bg); padding: 0.5em 0.5em 0.5em 1em; }
-      .markdown-body table { width: 100%; border-collapse: collapse; margin-bottom: 1em; }
-      .markdown-body th, .markdown-body td { border: 1px solid var(--border-color); padding: 0.5em 1em; }
-      .markdown-body th { background-color: var(--bg-sidebar); font-weight: bold; text-align: left; }
-      .markdown-body tr:nth-child(even) { background-color: var(--hover-bg); }
-      .markdown-body img { max-width: 100%; border-radius: 4px; border: 1px solid var(--border-color); }
-      .markdown-body a { color: var(--accent-color); text-decoration: none; }
-      .markdown-body a:hover { text-decoration: underline; }
-      
-      /* Visualizer Containers */
-      
-      model-viewer { width: 100%; height: 400px; background-color: var(--bg-sidebar); border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 1em; }
+      .hidden { display: none !important; }
+      @media (min-width: 768px) { .md-hidden { display: none !important; } }
     </style>
 
+
+
 <link rel="stylesheet" href="/index.css">
-  <script type="module" crossorigin src="/MathSci/assets/index-v4xuDmUJ.js"></script>
+  <script type="module" crossorigin src="/MathSci/assets/index-mA7dprOi.js"></script>
 </head>
   <body>
     <div id="root"></div>
